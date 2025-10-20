@@ -33,6 +33,6 @@ steps:
   - '--update-labels=commit_sha=${COMMIT_SHA}'
   # The deployment needs to specify the Service Account with Drive/GCS access
   - '--service-account'
-  - 'drive-ingest-bot@${PROJECT_ID}.iam.gserviceaccount.com' # REPLACE drive-ingest-bot with your actual service account name if different
+  - 'drive-ingest-bot@${PROJECT_ID}.iam.gserviceaccount.com' 
   - '--task-timeout'
   - '3600' # 1 hour timeout
