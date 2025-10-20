@@ -1,0 +1,6 @@
+# Libraries needed to talk to Google Cloud services
+google-api-python-client      # Core library to talk to Google Drive API (v3)
+google-cloud-storage          # For saving the final JSONL file to GCS
+google-auth                   # For handling service account credentials
+python-dateutil               # Helper for time/date math (for filtering by 'last week')
+# We don't list a PDF parser yet, but you would add one here if needed (e.g., PyPDF2)
