@@ -1,0 +1,38 @@
+steps:
+# Step 1: Build the Docker image using your existing Dockerfile
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  args:
+  - 'build'
+  - '-t'
+  - 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/origingpt/origingpt:${COMMIT_SHA}'
+  - '.'
+
+# Step 2: Push the image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/origingpt/origingpt:${COMMIT_SHA}'
+
+# Step 3: Deploy the image as a Cloud Run JOB (Crucial Fix)
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  id: Deploy-Job
+  entrypoint: gcloud
+  args:
+  - 'run'
+  - 'jobs'
+  - 'replace' # Use 'replace' to update the existing 'origingpt' job
+  - 'origingpt'
+  - '--image'
+  - 'europe-west1-docker.pkg.dev/${PROJECT_ID}/cloud-run-source-deploy/origingpt/origingpt:${COMMIT_SHA}'
+  - '--region'
+  - 'europe-west1'
+  - '--project'
+  - '${PROJECT_ID}'
+  - '--update-labels=commit_sha=${COMMIT_SHA}'
+  # The deployment needs to specify the Service Account with Drive/GCS access
+  - '--service-account'
+  - 'drive-ingest-bot@${PROJECT_ID}.iam.gserviceaccount.com' # REPLACE drive-ingest-bot with your actual service account name if different
+  - '--task-timeout'
+  - '3600' # 1 hour timeout
