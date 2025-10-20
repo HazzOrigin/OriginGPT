@@ -1,0 +1,2 @@
+# OriginGPT
+New AI tool
